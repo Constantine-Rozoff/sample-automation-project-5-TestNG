@@ -1,7 +1,18 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <suite name="full">
-    <test name="authServiceTest"/>
+    <test name="authServiceTest">
+        <parameter name="email-address" value="user1@test.com"></parameter>
+        <parameter name="password" value="password1"></parameter>
+        <groups>
+<!--            <run>-->
+<!--                <include name="negative"/>-->
+<!--            </run>-->
+        </groups>
+        <classes>
+            <class name="net.absoft.DummyTestFactory" />
+        </classes>
+    </test>
     <packages>
         <package name="net.absoft"></package>
     </packages>
