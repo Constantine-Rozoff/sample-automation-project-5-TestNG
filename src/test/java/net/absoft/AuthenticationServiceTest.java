@@ -13,35 +13,48 @@ import static org.testng.Assert.assertTrue;
 
 public class AuthenticationServiceTest {
 
-    @Test
+    @Test(
+            description = "Test successful authentication",
+            groups = "positive"
+    )
     public void testSuccessfulAuthentication() {
         Response response = new AuthenticationService().authenticate("user1@test.com", "password1");
         assertEquals(response.getCode(), 200, "Response code should be 200");
         assertTrue(validateToken(response.getMessage()), "Token should be the 32 digits string. Got " + response.getMessage());
     }
 
-    @Test
+    @Test(
+            groups = "negative",
+            invocationCount = 3
+    )
     public void testAuthenticationWithWrongPassword() {
         validateErrorResponse(new AuthenticationService().authenticate("user1@test.com", "wrong_password1"),
                 401,
                 "Invalid email or password");
     }
 
-    @Test
+    @Test(
+            priority = 3,
+            groups = "negative"
+    )
     public void testAuthenticationWithEmptyEmail() {
         Response expectedResponse = new Response(400, "Email should not be empty string");
         Response actualResponse = new AuthenticationService().authenticate("", "password1");
         assertEquals(actualResponse, expectedResponse, "Unexpected response");
     }
 
-    @Test
+    @Test(groups = "negative")
     public void testAuthenticationWithInvalidEmail() {
-
+        Response response = new AuthenticationService().authenticate("user1", "password1");
+        assertEquals(response.getCode(), 400, "Response code should be 200");
+        assertEquals(response.getMessage(), "Invalid email", "Response message should be \"Invalid email\"");
     }
 
-    @Test
+    @Test(groups = "negative")
     public void testAuthenticationWithEmptyPassword() {
-
+        Response expectedResponse = new Response(400, "Password should not be empty string");
+        Response actualResponse = new AuthenticationService().authenticate("user1@test.com", "");
+        assertEquals(actualResponse, expectedResponse, "Unexpected response");
     }
 
     private boolean validateToken(String token) {
